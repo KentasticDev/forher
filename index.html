@@ -1,0 +1,923 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For Her 💗</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+  /* ============================================================
+    🎨 CUSTOMIZE HERE
+    ============================================================ */
+  /* 👇 Put your video file path/URL here (relative or absolute) */
+  /* Example: VIDEO_SRC = "myvideo.mp4"  or a full URL          */
+  /* We use a JS variable below — see CUSTOMIZE section in <script> */
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    /* Pink + Light Blue palette */
+    --pink:#e8637a;
+    --pink-dark:#c2304d;
+    --pink-light:#f9d0dd;
+    --pink-pale:#fff0f5;
+    --blue:#7ec8e3;
+    --blue-dark:#4a9dbf;
+    --blue-light:#c8eaf5;
+    --blue-pale:#eaf7fc;
+    --petal:#f7c5d0;
+    --cream:#f5faff;
+    --text-dark:#2a1a2e;
+    --text-mid:#5a3a6a;
+    --text-soft:#9a6a8a;
+  }
+
+  html{scroll-behavior:smooth}
+  body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden}
+
+  /* ============================================================
+    INTRO OVERLAY — Gift animation
+    ============================================================ */
+  #intro-overlay{
+    position:fixed;inset:0;z-index:9999;
+    background:linear-gradient(135deg,#ffe0ec 0%,#d0eeff 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:0;
+    transition:opacity .8s ease, visibility .8s ease;
+  }
+  #intro-overlay.hide{opacity:0;visibility:hidden;pointer-events:none}
+
+  /* Gift box */
+  .gift-scene{position:relative;width:180px;height:200px;cursor:pointer;user-select:none}
+  .gift-box-body{
+    position:absolute;bottom:0;left:0;right:0;height:130px;
+    background:linear-gradient(135deg,var(--pink) 0%,var(--blue-dark) 100%);
+    border-radius:8px 8px 14px 14px;
+    box-shadow:0 12px 40px rgba(232,99,122,.35), 0 4px 12px rgba(126,200,227,.3);
+  }
+  .gift-box-stripe-v{
+    position:absolute;left:50%;transform:translateX(-50%);
+    width:28px;height:100%;
+    background:rgba(255,255,255,.28);border-radius:4px;
+  }
+  .gift-box-lid{
+    position:absolute;top:60px;left:-6px;right:-6px;height:36px;
+    background:linear-gradient(135deg,var(--pink-dark) 0%,var(--blue) 100%);
+    border-radius:8px;
+    transform-origin:center bottom;
+    transition:transform .6s cubic-bezier(.34,1.56,.64,1), opacity .4s ease;
+    z-index:2;
+    box-shadow:0 4px 16px rgba(194,48,77,.3);
+  }
+  .gift-box-lid::after{
+    content:'';position:absolute;left:50%;transform:translateX(-50%);
+    width:28px;height:100%;
+    background:rgba(255,255,255,.25);border-radius:4px;
+  }
+  .gift-ribbon-h{
+    position:absolute;top:50%;transform:translateY(-50%);
+    left:0;right:0;height:14px;
+    background:rgba(255,255,255,.32);border-radius:3px;
+  }
+  /* Bow */
+  .bow{position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:80px;height:40px}
+  .bow-loop{
+    position:absolute;width:36px;height:28px;
+    border-radius:50%;
+    border:8px solid #fff;
+    opacity:.9;
+  }
+  .bow-loop.left{left:0;transform:rotate(-30deg);background:rgba(232,99,122,.6)}
+  .bow-loop.right{right:0;transform:rotate(30deg);background:rgba(126,200,227,.6)}
+  .bow-knot{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:18px;height:18px;border-radius:50%;
+    background:linear-gradient(135deg,var(--pink),var(--blue));
+    z-index:1;
+  }
+  /* Gift glow ring */
+  .gift-glow{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:220px;height:220px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,160,200,.25) 0%,transparent 70%);
+    animation:glowPulse 2s ease-in-out infinite;
+  }
+  @keyframes glowPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.12)}}
+
+  /* Gift bounce idle */
+  .gift-scene{animation:giftBounce 2.2s ease-in-out infinite}
+  @keyframes giftBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .gift-scene:hover{animation:none;transform:scale(1.06)}
+
+  /* Open animation */
+  .gift-scene.opening .gift-box-lid{
+    transform:translateY(-80px) rotate(-18deg) scale(1.1);
+    opacity:0;
+  }
+  .gift-scene.opening{animation:none}
+
+  /* Sparkles that burst out */
+  .sparkle{
+    position:absolute;border-radius:50%;pointer-events:none;
+    animation:sparklePop .7s ease-out forwards;
+    opacity:0;
+  }
+  @keyframes sparklePop{
+    0%{transform:translate(0,0) scale(0);opacity:1}
+    100%{opacity:0}
+  }
+
+  .intro-tap-hint{
+    margin-top:32px;
+    font-family:'Playfair Display',serif;font-style:italic;
+    font-size:1.15rem;color:var(--text-mid);
+    animation:fadeUpIn 1s ease .5s both;
+    text-align:center;line-height:1.6;
+  }
+  @keyframes fadeUpIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .intro-tap-hint span{display:block;font-size:.8rem;margin-top:6px;color:var(--text-soft)}
+
+  /* Floating hearts in intro */
+  .intro-hearts{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .ih{position:absolute;font-size:1.4rem;opacity:0;animation:ihFloat linear infinite}
+  @keyframes ihFloat{0%{transform:translateY(110vh) scale(.6) rotate(-20deg);opacity:0}10%{opacity:.7}90%{opacity:.5}100%{transform:translateY(-10vh) scale(1) rotate(20deg);opacity:0}}
+
+  /* ============================================================
+    PETALS (background, all sections)
+    ============================================================ */
+  .petals-bg{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden}
+  .petal{position:absolute;border-radius:50% 0 50% 0;opacity:0;animation:fall linear infinite}
+  @keyframes fall{
+    0%{transform:translateY(-20px) rotate(0deg);opacity:.8}
+    100%{transform:translateY(110vh) rotate(400deg);opacity:0}
+  }
+
+  /* ============================================================
+    SECTIONS
+    ============================================================ */
+  section{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;position:relative}
+
+  .section-title{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.8rem,5vw,2.6rem);
+    color:var(--pink-dark);text-align:center;margin-bottom:10px
+  }
+  .section-sub{
+    font-family:'Playfair Display',serif;font-style:italic;
+    color:var(--text-soft);margin-bottom:36px;text-align:center;font-size:1.05rem
+  }
+
+  /* ============================================================
+    S0 — GREETING
+    ============================================================ */
+  #s0{background:linear-gradient(160deg,#fff0f5 0%,#e0f4ff 100%);text-align:center;z-index:1}
+  .greeting-heart{font-size:64px;animation:heartbeat 1.4s ease-in-out infinite;display:block;margin-bottom:24px}
+  @keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.18)}28%{transform:scale(1)}42%{transform:scale(1.12)}}
+  .greeting-title{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2.4rem,7vw,4rem);
+    background:linear-gradient(135deg,var(--pink-dark),var(--blue-dark));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    line-height:1.15;margin-bottom:16px
+  }
+  .greeting-sub{
+    font-family:'Playfair Display',serif;font-style:italic;
+    font-size:clamp(1rem,3vw,1.3rem);color:var(--text-mid);margin-bottom:40px
+  }
+  .scroll-cta{
+    display:inline-block;padding:14px 44px;
+    background:linear-gradient(135deg,var(--pink),var(--blue-dark));
+    color:#fff;border-radius:50px;font-size:1rem;letter-spacing:.06em;
+    cursor:pointer;border:none;font-family:'Lato',sans-serif;
+    box-shadow:0 6px 24px rgba(232,99,122,.3);
+    transition:transform .2s,box-shadow .2s
+  }
+  .scroll-cta:hover{transform:scale(1.06);box-shadow:0 10px 32px rgba(74,157,191,.4)}
+
+  /* ============================================================
+    S1 — GARDEN (CSS tulips)
+    ============================================================ */
+  #s1{
+    background:linear-gradient(180deg,#e0f4ff 0%,#c8eaf5 30%,#a8d8c0 70%,#7ab870 100%);
+    z-index:1;overflow:hidden;padding:40px 0 0;min-height:100vh
+  }
+  .garden-title-wrap{text-align:center;padding:0 24px 20px}
+  .garden-title-wrap .section-title{color:#2a6a8a}
+  .garden-title-wrap .section-sub{color:#4a8a6a}
+
+  /* Sky layer */
+  .sky{position:absolute;top:0;left:0;right:0;height:55%;background:linear-gradient(180deg,#b8e0ff 0%,#d8f0ff 100%);z-index:0}
+
+  /* Clouds */
+  .cloud{position:absolute;background:rgba(255,255,255,.75);border-radius:50px;animation:cloudDrift linear infinite}
+  .cloud::before,.cloud::after{content:'';position:absolute;background:inherit;border-radius:50%}
+  @keyframes cloudDrift{from{transform:translateX(-200px)}to{transform:translateX(110vw)}}
+
+  /* Ground */
+  .ground{position:absolute;bottom:0;left:0;right:0;height:44%;background:linear-gradient(180deg,#8abb6a 0%,#6a9a4a 60%,#4a7a2a 100%);z-index:1}
+  .ground::before{content:'';position:absolute;top:-18px;left:0;right:0;height:36px;background:radial-gradient(ellipse 120% 80% at 50% 0%,#9acc7a,transparent);border-radius:50%}
+
+  /* Sun */
+  .sun{
+    position:absolute;top:40px;right:80px;
+    width:70px;height:70px;border-radius:50%;
+    background:radial-gradient(circle,#ffe880,#ffcc40);
+    box-shadow:0 0 0 14px rgba(255,220,60,.2), 0 0 0 28px rgba(255,220,60,.1);
+    animation:sunPulse 4s ease-in-out infinite;z-index:1
+  }
+  @keyframes sunPulse{0%,100%{box-shadow:0 0 0 14px rgba(255,220,60,.2),0 0 0 28px rgba(255,220,60,.1)}50%{box-shadow:0 0 0 22px rgba(255,220,60,.25),0 0 0 42px rgba(255,220,60,.08)}}
+
+  /* Tulip garden container */
+  .tulip-garden{
+    position:absolute;bottom:0;left:0;right:0;height:68%;
+    display:flex;align-items:flex-end;justify-content:center;
+    gap:0;z-index:2;padding-bottom:0;
+    flex-wrap:nowrap;overflow:hidden;
+  }
+
+  /* Single tulip unit */
+  .tulip{
+    display:flex;flex-direction:column;align-items:center;
+    position:relative;flex-shrink:0;
+    animation:tulipSway ease-in-out infinite;
+  }
+  @keyframes tulipSway{
+    0%,100%{transform:rotate(0deg) translateY(0)}
+    25%{transform:rotate(1.5deg) translateY(-2px)}
+    75%{transform:rotate(-1.5deg) translateY(-1px)}
+  }
+
+  /* Stem */
+  .tulip-stem{
+    width:5px;border-radius:3px;
+    background:linear-gradient(to right,#4a8a30,#7aba50);
+    position:relative;transform-origin:bottom center;
+  }
+  .tulip-stem::after{
+    content:'';position:absolute;
+    width:22px;height:14px;
+    background:linear-gradient(135deg,#5a9a38,#8acc58);
+    border-radius:50% 50% 50% 0/60% 60% 40% 40%;
+    left:3px;top:30%;
+  }
+
+  /* Leaf (alternate side) */
+  .tulip.flip .tulip-stem::after{
+    left:auto;right:3px;
+    border-radius:50% 50% 0 50%/60% 60% 40% 40%;
+  }
+
+  /* Flower head — uses clip-path for tulip shape */
+  .tulip-head{
+    position:relative;
+    display:flex;align-items:flex-end;justify-content:center;
+    margin-bottom:-2px;
+  }
+  /* Three petals */
+  .petal-c,.petal-l,.petal-r{
+    position:absolute;border-radius:50% 50% 40% 40%;
+    bottom:0;transform-origin:bottom center;
+  }
+  .petal-l{transform:rotate(-28deg) translateX(-40%)}
+  .petal-r{transform:rotate(28deg) translateX(40%)}
+  .petal-c{z-index:1}
+
+  /* Stamen */
+  .stamen{
+    position:absolute;bottom:60%;left:50%;transform:translateX(-50%);
+    width:4px;height:12px;
+    background:linear-gradient(to top,#ffe050,#ffaa20);
+    border-radius:2px 2px 0 0;z-index:2;
+  }
+
+  /* Garden butterflies */
+  .butterfly{
+    position:absolute;font-size:1.4rem;z-index:10;
+    animation:butterflyFloat ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes butterflyFloat{
+    0%,100%{transform:translateY(0) rotate(-5deg)}
+    50%{transform:translateY(-18px) rotate(5deg)}
+  }
+
+  /* Birds */
+  .bird{position:absolute;top:15%;font-size:.9rem;z-index:3;animation:birdFly linear infinite}
+  @keyframes birdFly{from{left:-5%}to{left:110%}}
+
+  /* ============================================================
+    S2 — PHOTO GALLERY
+    ============================================================ */
+  #s2{background:linear-gradient(160deg,#fff0f5 0%,#e8f7ff 100%);z-index:1}
+  .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:680px;width:100%}
+  .photo-slot{
+    aspect-ratio:1;border-radius:14px;overflow:hidden;
+    background:linear-gradient(135deg,var(--pink-light),var(--blue-light));
+    border:3px solid #fff;display:flex;align-items:center;justify-content:center;
+    position:relative;
+    box-shadow:0 4px 16px rgba(232,99,122,.15);
+    transition:transform .25s,box-shadow .25s
+  }
+  .photo-slot:hover{transform:scale(1.04) rotate(-1deg);box-shadow:0 8px 28px rgba(74,157,191,.25)}
+  .photo-slot img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;display:block}
+  .photo-icon{font-size:2.2rem}
+  .photo-hint{font-size:.65rem;color:var(--text-soft);text-align:center;padding:0 6px;word-break:break-all}
+
+  /* ============================================================
+    S3 — FILM STRIP
+    ============================================================ */
+  #s3{
+    background:linear-gradient(160deg,#1a0820 0%,#0a1a2e 100%);
+    z-index:1;overflow:hidden;padding:48px 0;min-height:unset
+  }
+  .filmstrip-title{
+    font-family:'Playfair Display',serif;
+    background:linear-gradient(135deg,var(--pink-light),var(--blue-light));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    font-size:clamp(1.4rem,4vw,1.9rem);text-align:center;margin-bottom:30px
+  }
+  .film-outer{width:100%;overflow:hidden}
+  .film-track{display:flex;width:max-content;animation:filmScroll 30s linear infinite}
+  .film-track:hover{animation-play-state:paused}
+  @keyframes filmScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .film-frame{
+    width:160px;flex-shrink:0;
+    background:#0e0020;border-left:6px solid #06000e;border-right:6px solid #06000e;
+    padding:9px 5px
+  }
+  .film-holes{display:flex;justify-content:space-around;padding:0 2px;margin-bottom:7px}
+  .film-hole{width:16px;height:11px;background:#1e0840;border-radius:3px}
+  .film-holes.bot{margin-top:7px;margin-bottom:0}
+  .film-img{
+    width:100%;aspect-ratio:1;background:#180428;border-radius:3px;
+    overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative
+  }
+  .film-img img{width:100%;height:100%;object-fit:cover;display:block}
+  .film-img .film-emoji{font-size:1.8rem}
+  .film-add-label{
+    position:absolute;bottom:0;left:0;right:0;
+    background:linear-gradient(90deg,rgba(232,99,122,.82),rgba(74,157,191,.82));
+    color:#fff;font-size:.6rem;text-align:center;padding:5px 0;
+    cursor:pointer;letter-spacing:.05em;font-family:'Lato',sans-serif;
+    border:none;width:100%;transition:opacity .2s;user-select:none;
+  }
+  .film-add-label:hover{opacity:.85}
+  .film-add-label input{display:none}
+
+  /* ============================================================
+    S4 — SONG / VIDEO
+    ============================================================ */
+  #s4{background:linear-gradient(160deg,#fff0f5 0%,#e0f4ff 100%);z-index:1}
+  .song-wrapper{max-width:760px;width:100%;display:flex;flex-direction:column;gap:24px}
+  .video-box{
+    width:100%;border-radius:20px;overflow:hidden;
+    border:3px solid var(--petal);
+    background:#0a0a1a;aspect-ratio:16/9;
+    display:flex;align-items:center;justify-content:center;position:relative;
+    box-shadow:0 12px 48px rgba(232,99,122,.2), 0 4px 16px rgba(74,157,191,.15)
+  }
+  .video-box video{width:100%;height:100%;border:none;display:block;object-fit:contain;background:#000}
+  .video-placeholder{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;width:100%;height:100%;color:var(--petal);text-align:center;padding:24px
+  }
+  .video-placeholder .vp-icon{font-size:3rem}
+  .video-placeholder p{
+    font-family:'Playfair Display',serif;font-style:italic;
+    font-size:1rem;color:var(--blue-light);line-height:1.6
+  }
+  .song-info-card{
+    background:linear-gradient(135deg,var(--pink-pale),var(--blue-pale));
+    border-radius:16px;padding:22px 28px;
+    border:1.5px solid var(--petal);
+    display:flex;align-items:center;gap:20px;
+    box-shadow:0 4px 20px rgba(232,99,122,.1)
+  }
+  .song-disc{
+    width:54px;height:54px;border-radius:50%;flex-shrink:0;
+    background:conic-gradient(var(--pink),var(--blue),var(--pink-dark),var(--blue-dark),var(--pink));
+    animation:discSpin 4s linear infinite;
+    box-shadow:0 4px 14px rgba(232,99,122,.3)
+  }
+  @keyframes discSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .song-disc-inner{
+    position:absolute;width:18px;height:18px;border-radius:50%;
+    background:var(--cream);top:50%;left:50%;transform:translate(-50%,-50%)
+  }
+  .song-disc-wrap{position:relative}
+  .song-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-soft);margin-bottom:4px}
+  .song-name{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--pink-dark);margin-bottom:2px}
+  .song-artist{font-size:.9rem;color:var(--blue-dark)}
+
+  /* ============================================================
+    S5 — LOVE LETTER
+    ============================================================ */
+  #s5{background:linear-gradient(160deg,#e8f7ff 0%,#fff0f5 100%);z-index:1}
+  .letter-card{
+    max-width:560px;width:100%;background:#fff;border-radius:24px;
+    border:1.5px solid var(--petal);padding:52px 44px 40px;position:relative;
+    box-shadow:0 8px 40px rgba(232,99,122,.12), 0 2px 12px rgba(74,157,191,.1)
+  }
+  .letter-seal{
+    position:absolute;top:-26px;left:50%;transform:translateX(-50%);
+    width:52px;height:52px;
+    background:linear-gradient(135deg,var(--pink),var(--blue-dark));
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;color:#fff;border:4px solid #fff
+  }
+  .letter-text{
+    font-family:'Playfair Display',serif;font-size:1.05rem;
+    line-height:1.9;color:var(--text-dark);font-style:italic;outline:none
+  }
+  .letter-text:focus{background:#f5fbff;border-radius:8px;padding:4px 8px}
+  .letter-sig{
+    margin-top:28px;text-align:right;
+    font-family:'Playfair Display',serif;
+    background:linear-gradient(135deg,var(--pink),var(--blue-dark));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    font-size:1.1rem;outline:none
+  }
+  .edit-hint{font-size:.75rem;color:var(--text-soft);margin-top:16px;text-align:center}
+
+  /* ============================================================
+    NAV DOTS
+    ============================================================ */
+  .nav-dots{
+    position:fixed;right:18px;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;gap:12px;z-index:999
+  }
+  .nav-dot{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--pink-light);border:2px solid var(--pink);
+    cursor:pointer;transition:background .2s,transform .2s,border-color .2s
+  }
+  .nav-dot.active{
+    background:linear-gradient(135deg,var(--pink),var(--blue));
+    border-color:var(--blue);transform:scale(1.4)
+  }
+
+  /* ============================================================
+    FOOTER
+    ============================================================ */
+  .footer{
+    background:linear-gradient(90deg,#1a0820,#0a1a2e);
+    color:var(--pink-light);text-align:center;padding:30px 24px;
+    font-family:'Playfair Display',serif;font-style:italic;
+    font-size:.98rem;letter-spacing:.04em
+  }
+
+  /* ============================================================
+    RESPONSIVE
+    ============================================================ */
+  @media(max-width:600px){
+    .gallery-grid{grid-template-columns:repeat(2,1fr)}
+    .letter-card{padding:48px 22px 32px}
+    .nav-dots{right:8px}
+    .sun{right:20px;top:20px;width:50px;height:50px}
+  }
+
+  /* Entrance animation for main content */
+  .fade-in-up{animation:fadeUpIn .9s ease both}
+  </style>
+  </head>
+  <body>
+
+  <!-- ============================================================
+      🎁 INTRO OVERLAY
+      ============================================================ -->
+  <div id="intro-overlay">
+    <div class="intro-hearts" id="introHearts"></div>
+
+    <div class="gift-scene" id="giftScene" onclick="openGift()">
+      <div class="gift-glow"></div>
+      <div class="bow">
+        <div class="bow-loop left"></div>
+        <div class="bow-loop right"></div>
+        <div class="bow-knot"></div>
+      </div>
+      <div class="gift-box-lid" id="giftLid">
+        <div class="gift-ribbon-h"></div>
+      </div>
+      <div class="gift-box-body">
+        <div class="gift-box-stripe-v"></div>
+        <div class="gift-ribbon-h"></div>
+      </div>
+    </div>
+
+    <div class="intro-tap-hint">
+      A little something for you 💗
+      <span>tap the gift to open ✨</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+      PETALS (global background)
+      ============================================================ -->
+  <div class="petals-bg" id="petals"></div>
+
+  <!-- NAV DOTS -->
+  <nav class="nav-dots">
+    <div class="nav-dot active" data-i="0"></div>
+    <div class="nav-dot" data-i="1"></div>
+    <div class="nav-dot" data-i="2"></div>
+    <div class="nav-dot" data-i="3"></div>
+    <div class="nav-dot" data-i="4"></div>
+    <div class="nav-dot" data-i="5"></div>
+  </nav>
+
+  <!-- ============================================================
+      S0 — GREETING
+      ============================================================ -->
+  <section id="s0">
+    <span class="greeting-heart">💗</span>
+    <h1 class="greeting-title">Hello, Eloi!!</h1>
+    <p class="greeting-sub">This little page was made just for you —<br>every pixel placed with love.</p>
+    <button class="scroll-cta" onclick="goTo(1)">Open your gift ↓</button>
+  </section>
+
+  <!-- ============================================================
+      S1 — TULIP GARDEN
+      ============================================================ -->
+  <section id="s1">
+    <div class="sky"></div>
+    <div class="sun"></div>
+
+    <!-- Birds flying across sky -->
+    <div class="bird" style="animation-duration:18s;animation-delay:0s;top:12%">🕊</div>
+    <div class="bird" style="animation-duration:24s;animation-delay:7s;top:20%">🕊</div>
+    <div class="bird" style="animation-duration:20s;animation-delay:14s;top:8%">🕊</div>
+
+    <div class="garden-title-wrap" style="position:relative;z-index:5">
+      <h2 class="section-title">A garden, just for you 🌷</h2>
+      <p class="section-sub">Every petal is a thought of you.</p>
+    </div>
+
+    <!-- Ground -->
+    <div class="ground"></div>
+
+    <!-- Tulip garden — populated by JS -->
+    <div class="tulip-garden" id="tulipGarden"></div>
+
+    <!-- Butterflies -->
+    <div class="butterfly" style="left:15%;bottom:55%;animation-duration:3.2s;animation-delay:0s">🦋</div>
+    <div class="butterfly" style="left:60%;bottom:65%;animation-duration:2.8s;animation-delay:1.1s">🦋</div>
+    <div class="butterfly" style="left:80%;bottom:52%;animation-duration:3.6s;animation-delay:.5s">🦋</div>
+    <div class="butterfly" style="left:35%;bottom:60%;animation-duration:3s;animation-delay:2s">🦋</div>
+  </section>
+
+  <!-- ============================================================
+      S2 — PHOTO GALLERY
+      ============================================================ -->
+  <section id="s2">
+    <h2 class="section-title">Our memories 📷</h2>
+    <p class="section-sub">Every moment I treasure with you.</p>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </section>
+
+  <!-- ============================================================
+      S3 — FILM STRIP
+      ============================================================ -->
+  <section id="s3" style="min-height:unset;padding:60px 0">
+    <h2 class="filmstrip-title">📽 Through the lens of us</h2>
+    <div class="film-outer">
+      <div class="film-track" id="filmTrack"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+      S4 — SONG + VIDEO
+      ============================================================ -->
+  <section id="s4">
+    <h2 class="section-title">The song that's always you 🎵</h2>
+    <p class="section-sub">Every time I hear it, I think of you.</p>
+    <div class="song-wrapper">
+      <div class="video-box" id="videoBox">
+        <div class="video-placeholder" id="videoPlaceholder">
+          <div class="vp-icon">🎬</div>
+          <p>Add your video path in the <code style="background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">VIDEO_SRC</code> variable<br>at the top of the &lt;script&gt; tag</p>
+        </div>
+      </div>
+      <div class="song-info-card">
+        <div class="song-disc-wrap">
+          <div class="song-disc"></div>
+          <div class="song-disc-inner"></div>
+        </div>
+        <div>
+          <div class="song-label">♪ Now playing</div>
+          <div class="song-name" id="songName">Our Song</div>
+          <div class="song-artist" id="songArtist">The one that reminds me of you</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+      S5 — LOVE LETTER
+      ============================================================ -->
+  <section id="s5">
+    <h2 class="section-title" style="margin-bottom:40px">A letter, just for you 💌</h2>
+    <div class="letter-card">
+      <div class="letter-seal">💌</div>
+      <p class="letter-text" contenteditable="true">
+        My dearest Eloi,<br><br>
+        Gusto ko lang i appreciate kung gaano ka ka genuine sakin ngayon at kung paano mo binago yung buhay ko. Ang gaan lang sa feeling na alam kong mutual tayo.
+        Alam mo naman kung gaano ko hilig kumuha ng pictures at mag-adjust ng lens para makuha 'yung perfect lighting, pero to be honest, kahit anong ganda nung mga shots natin, mas maganda pa rin yung mismong moment kasama ka.
+        Walang camera ang makakatapat kung gaano talaga kasaya yung mga oras na yun.<br><br>
+        Thank you sa company, sa mga random na moments natin n mga tawanan at asaran, at sa pagpayag mo na gawin kitang model (waw model). I really appreciate you, at gusto ko lang talaga na malaman mo yun directly sakin.
+        <br><br>
+        Alam kong sobrang sudden ng mga nangyayari satin pero genuine yung saya ko pag kasama kita.
+      </p>
+      <div class="letter-sig" contenteditable="true">— Yours, 87000 jalibi deliberii 💗</div>
+    </div>
+  </section>
+
+  <div class="footer">Made with love, just for you 💗</div>
+
+  <script>
+  /* ============================================================
+    🎨 CUSTOMIZE HERE — fill these in before sharing the link
+    ============================================================ */
+  const VIDEO_SRC   = "/forher/music.mp4";          // 👈 e.g. "ourvideo.mp4" or a URL
+  const SONG_NAME   = "14";   // 👈 song title
+  const SONG_ARTIST = "The one that reminds me of you wawaw"; // 👈 artist name
+  /* ============================================================ */
+
+  /* ---------- INTRO GIFT ANIMATION ---------- */
+  const introHearts = document.getElementById('introHearts');
+  const heartEmojis = ['💗','💙','💕','💫','✨','🌸'];
+  for(let i=0;i<14;i++){
+    const h=document.createElement('div');h.className='ih';
+    h.textContent=heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+    h.style.cssText=`left:${Math.random()*100}%;font-size:${1+Math.random()*1.4}rem;animation-duration:${7+Math.random()*8}s;animation-delay:${Math.random()*6}s`;
+    introHearts.appendChild(h);
+  }
+
+  function spawnSparkles(cx,cy){
+    const overlay=document.getElementById('intro-overlay');
+    const colors=['#e8637a','#7ec8e3','#ffcc40','#c2304d','#4a9dbf','#f9b8cc'];
+    for(let i=0;i<20;i++){
+      const s=document.createElement('div');s.className='sparkle';
+      const size=5+Math.random()*12;
+      const angle=Math.random()*360;const dist=60+Math.random()*120;
+      const tx=Math.cos(angle*Math.PI/180)*dist;const ty=Math.sin(angle*Math.PI/180)*dist;
+      s.style.cssText=`
+        left:${cx}px;top:${cy}px;
+        width:${size}px;height:${size}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        animation-duration:${.5+Math.random()*.4}s;
+        animation-delay:${Math.random()*.15}s;
+      `;
+      s.style.setProperty('--tx',tx+'px');s.style.setProperty('--ty',ty+'px');
+      s.style.animation=`sparklePop ${.5+Math.random()*.4}s ease-out ${Math.random()*.1}s forwards`;
+      // Override keyframe with inline for direction
+      s.animate([
+        {transform:'translate(0,0) scale(0)',opacity:1},
+        {transform:`translate(${tx}px,${ty}px) scale(1)`,opacity:.8,offset:.4},
+        {transform:`translate(${tx*1.4}px,${ty*1.4}px) scale(.4)`,opacity:0}
+      ],{duration:600+Math.random()*400,delay:Math.random()*100,fill:'forwards',easing:'ease-out'});
+      overlay.appendChild(s);
+      setTimeout(()=>s.remove(),1200);
+    }
+  }
+
+  function openGift(){
+    const scene=document.getElementById('giftScene');
+    const overlay=document.getElementById('intro-overlay');
+    scene.classList.add('opening');
+
+    // Get center of gift for sparkles
+    const rect=scene.getBoundingClientRect();
+    spawnSparkles(rect.left+rect.width/2, rect.top+rect.height/2);
+
+    // After lid flies up, add burst of hearts from box
+    setTimeout(()=>{
+      for(let i=0;i<10;i++){
+        const h=document.createElement('div');
+        h.style.cssText=`position:absolute;font-size:${1.2+Math.random()}rem;left:${rect.left+rect.width/2}px;top:${rect.top+40}px;pointer-events:none;z-index:10000`;
+        h.textContent=heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+        document.body.appendChild(h);
+        const tx=(Math.random()-.5)*200;const ty=-(80+Math.random()*160);
+        h.animate([
+          {transform:'translate(0,0) scale(0)',opacity:1},
+          {transform:`translate(${tx}px,${ty}px) scale(1.2)`,opacity:.9,offset:.4},
+          {transform:`translate(${tx*1.5}px,${ty*1.5}px) scale(.6)`,opacity:0}
+        ],{duration:1000+Math.random()*600,delay:i*60,fill:'forwards',easing:'ease-out'});
+        setTimeout(()=>h.remove(),2000);
+      }
+    },300);
+
+    // Fade overlay out
+    setTimeout(()=>{
+      overlay.classList.add('hide');
+    },900);
+  }
+
+  /* ---------- PETALS ---------- */
+  (function(){
+    const bg=document.getElementById('petals');
+    const colors=['#f9b8cc','#a8d8f0','#fcccd8','#7ec8e3','#f0b0c8','#b8e0f8','#f4c0d0','#90d0ea'];
+    for(let i=0;i<32;i++){
+      const p=document.createElement('div');p.className='petal';
+      const s=7+Math.random()*11;
+      p.style.cssText=`left:${Math.random()*100}vw;width:${s}px;height:${s*1.4}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${9+Math.random()*12}s;animation-delay:${Math.random()*18}s;opacity:0`;
+      bg.appendChild(p);
+    }
+  })();
+
+  /* ---------- NAV ---------- */
+  const sIds=['s0','s1','s2','s3','s4','s5'];
+  const dots=document.querySelectorAll('.nav-dot');
+  function goTo(i){document.getElementById(sIds[i]).scrollIntoView({behavior:'smooth'})}
+  dots.forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=sIds.indexOf(e.target.id);if(i>=0)dots.forEach((d,j)=>d.classList.toggle('active',j===i))}})},{threshold:0.4});
+  sIds.forEach(id=>obs.observe(document.getElementById(id)));
+
+  /* ---------- TULIP GARDEN ---------- */
+  (function buildGarden(){
+    const garden=document.getElementById('tulipGarden');
+    // Tulip color schemes — pinks and blues
+    const colorSets=[
+      {l:'#ee80a8',c:'#f9b0cc',r:'#d06088'},
+      {l:'#7ec8e3',c:'#a8e0f4',r:'#4a9dbf'},
+      {l:'#f090b8',c:'#fcbcd4',r:'#e05880'},
+      {l:'#90d4f0',c:'#b8e8f8',r:'#5aaat0'.replace('t','a'),},
+      {l:'#ee78a0',c:'#f9aac4',r:'#c85080'},
+      {l:'#6abcda',c:'#98d4f0',r:'#3a8ab0'},
+      {l:'#f4a0c0',c:'#fcc4d8',r:'#d87098'},
+      {l:'#80c8e8',c:'#a8dcf4',r:'#4898c0'},
+    ];
+    // Fix typo
+    colorSets[3].r='#5aaad0';
+
+    const count=22;
+    for(let i=0;i<count;i++){
+      const col=colorSets[i%colorSets.length];
+      const height=90+Math.random()*90; // 90–180px stems
+      const headW=22+Math.random()*18;
+      const headH=28+Math.random()*22;
+      const delay=(Math.random()*4).toFixed(2);
+      const dur=(2.5+Math.random()*2).toFixed(2);
+      const flip=Math.random()>.5?'flip':'';
+      const lean=(Math.random()-.5)*18; // slight lean
+
+      const t=document.createElement('div');
+      t.className=`tulip ${flip}`;
+      t.style.cssText=`animation-duration:${dur}s;animation-delay:${delay}s;transform:rotate(${lean}deg);margin:0 ${2+Math.random()*4}px`;
+
+      // Flower head
+      const head=document.createElement('div');
+      head.className='tulip-head';
+      head.style.cssText=`width:${headW*2}px;height:${headH}px`;
+
+      const pl=document.createElement('div');pl.className='petal-l';
+      pl.style.cssText=`width:${headW}px;height:${headH}px;background:${col.l};`;
+
+      const pr=document.createElement('div');pr.className='petal-r';
+      pr.style.cssText=`width:${headW}px;height:${headH}px;background:${col.r};`;
+
+      const pc=document.createElement('div');pc.className='petal-c';
+      pc.style.cssText=`width:${headW}px;height:${headH*1.1}px;background:${col.c};left:50%;transform:translateX(-50%)`;
+
+      const st=document.createElement('div');st.className='stamen';
+
+      head.appendChild(pl);head.appendChild(pr);head.appendChild(pc);head.appendChild(st);
+
+      // Stem
+      const stem=document.createElement('div');
+      stem.className='tulip-stem';
+      stem.style.cssText=`height:${height}px`;
+
+      t.appendChild(head);
+      t.appendChild(stem);
+      garden.appendChild(t);
+    }
+  })();
+
+  /* ============================================================
+    📸 ADD YOUR PHOTOS HERE
+    Put the filenames (or relative paths) of your images below.
+    Keep the HTML file in the same folder as your photos.
+    You can add up to 9 photos — any extras are ignored,
+    any missing slots show a placeholder emoji instead.
+    ============================================================ */
+  const PHOTOS = [
+    "/forher/photo1.jpg",   // 👈 slot 1 — gallery top-left
+    "/forher/photo2.jpg",   // 👈 slot 2
+    "/forher/photo3.jpg",   // 👈 slot 3
+    "/forher/photo4.jpg",   // 👈 slot 4
+    "/forher/photo5.jpg",   // 👈 slot 5
+    "/forher/photo6.jpg",   // 👈 slot 6 — gallery bottom-right
+  ];
+  /* ============================================================ */
+
+  const SLOTS = PHOTOS.length;
+  const EMOJIS = ['🌸','💕','✨','🌷','💙','🎀'];
+
+  /* ============================================================
+    🎞 FILM STRIP PHOTOS — add as many as you want!
+    These are separate from the gallery above.
+    Same rule: keep the HTML and image files in the same folder.
+    ============================================================ */
+  const FILM_PHOTOS = [
+    "/forher/photo7.jpg",   // 👈 frame 1
+    "/forher/photo8.jpg",   // 👈 frame 2
+    "/forher/photo9.jpg",   // 👈 frame 3
+    "/forher/photo10.jpg",   // 👈 frame 4
+    "/forher/photo11.jpg",   // 👈 frame 5
+    "/forher/photo12.jpg",   // 👈 frame 6
+    "/forher/photo13.jpg",   // 👈 frame 7
+    "/forher/photo14.jpg",   // 👈 frame 8
+  ];
+  /* ============================================================ */
+
+  /* GALLERY */
+  function buildGallery(){
+    const g=document.getElementById('galleryGrid');g.innerHTML='';
+    for(let i=0;i<SLOTS;i++){
+      const slot=document.createElement('div');slot.className='photo-slot';
+      const src=PHOTOS[i]||'';
+      if(src){
+        const img=document.createElement('img');
+        img.src=src;img.alt='Memory '+(i+1);
+        img.onerror=function(){
+          this.style.display='none';
+          const ic=document.createElement('div');ic.className='photo-icon';ic.textContent=EMOJIS[i%EMOJIS.length];
+          const ht=document.createElement('div');ht.className='photo-hint';ht.textContent=src;
+          slot.appendChild(ic);slot.appendChild(ht);
+        };
+        slot.appendChild(img);
+      } else {
+        const ic=document.createElement('div');ic.className='photo-icon';ic.textContent=EMOJIS[i%EMOJIS.length];
+        slot.appendChild(ic);
+      }
+      g.appendChild(slot);
+    }
+  }
+
+  /* FILM STRIP */
+  function makeHoles(){
+    const row=document.createElement('div');row.className='film-holes';
+    for(let h=0;h<4;h++){const hole=document.createElement('div');hole.className='film-hole';row.appendChild(hole);}
+    return row;
+  }
+  function buildFilm(){
+    const track=document.getElementById('filmTrack');track.innerHTML='';
+    const fLen=FILM_PHOTOS.length;
+    [0,1].forEach(()=>{
+      for(let i=0;i<fLen;i++){
+        const frame=document.createElement('div');frame.className='film-frame';
+        const top=makeHoles();
+        const imgBox=document.createElement('div');imgBox.className='film-img';
+        const src=FILM_PHOTOS[i]||'';
+        if(src){
+          const img=document.createElement('img');img.src=src;img.alt='frame '+(i+1);
+          img.onerror=function(){
+            this.style.display='none';
+            const sp=document.createElement('span');sp.className='film-emoji';sp.textContent=EMOJIS[i%EMOJIS.length];imgBox.appendChild(sp);
+          };
+          imgBox.appendChild(img);
+        } else {
+          const sp=document.createElement('span');sp.className='film-emoji';sp.textContent=EMOJIS[i%EMOJIS.length];imgBox.appendChild(sp);
+        }
+        const bot=makeHoles();bot.classList.add('bot');
+        frame.appendChild(top);frame.appendChild(imgBox);frame.appendChild(bot);track.appendChild(frame);
+      }
+    });
+  }
+  buildGallery();buildFilm();
+
+
+
+  /* ---------- VIDEO + SONG ---------- */
+  document.getElementById('songName').textContent = SONG_NAME;
+  document.getElementById('songArtist').textContent = SONG_ARTIST;
+
+  if(VIDEO_SRC && VIDEO_SRC.trim()!==''){
+    const box=document.getElementById('videoBox');
+    const placeholder=document.getElementById('videoPlaceholder');
+    if(placeholder)placeholder.remove();
+    const vid=document.createElement('video');
+    vid.src=VIDEO_SRC;
+    vid.controls=true;
+    vid.autoplay=false; // will autoplay when section is visible
+    vid.loop=false;
+    vid.style.cssText='width:100%;height:100%;border-radius:17px;display:block;object-fit:contain;background:#000';
+    box.appendChild(vid);
+
+    // Auto-play when the music section scrolls into view
+    const vidObs=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          vid.play().catch(()=>{/* autoplay blocked — user can tap play */});
+        } else {
+          vid.pause();
+        }
+      });
+    },{threshold:0.5});
+    vidObs.observe(document.getElementById('s4'));
+  }
+  </script>
+  </body>
+  </html>
